@@ -111,7 +111,7 @@ Timestamp(ms) | Temp(C) | Luz(ADC) | Vibr | Status
 
 ## 🔗 Simulação no Tinkercad
 
-> 🔗 **[Inserir link do projeto público no Tinkercad aqui]**
+> 🔗 **[https://www.tinkercad.com/things/6WLFEkSQAZO-missao-orion-gs-20261-/editel?returnTo=https%3A%2F%2Fwww.tinkercad.com%2Fdashboard&sharecode=XN8fGeLOVa7m7TcVNr1VVsyHyr1n6y1xraJJovw3LmM]**
 
 Para visualizar:
 1. Acesse o link acima
