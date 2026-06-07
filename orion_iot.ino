@@ -1,5 +1,4 @@
 /*
- * ============================================================
  * MISSAO ORION — Cápsula Espacial Experimental
  * Comp. Organization & Architecture — GS 2026.1
  * FIAP • Turma 1CCPY • Grupo 05
@@ -16,36 +15,33 @@
  *
  * Display: LCD 16x2 (I2C simulado via pinos digitais)
  * Alertas: LEDs verde (OK) e vermelho (ALERTA) + buzzer passivo
- * ============================================================
  */
 
 #include <LiquidCrystal.h>
 
-// --- Pinos ---
-// LCD: RS, EN, D4, D5, D6, D7
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-const int PIN_TEMP      = A0;   // TMP36 — temperatura
-const int PIN_LUZ       = A1;   // LDR   — luminosidade
-const int PIN_VIBRACAO  = 7;    // SW-420 (digital) — vibração
+const int PIN_TEMP      = A0;   
+const int PIN_LUZ       = A1;   
+const int PIN_VIBRACAO  = 7;    
 
-const int LED_OK        = 8;    // LED verde
-const int LED_ALERTA    = 9;    // LED vermelho
-const int BUZZER        = 10;   // Buzzer passivo
+const int LED_OK        = 8;    
+const int LED_ALERTA    = 9;    
+const int BUZZER        = 10;   
 
-// --- Limiares operacionais da cápsula ---
+// Limiares operacionais da cápsula 
 const float TEMP_MIN    = 18.0;
 const float TEMP_MAX    = 35.0;
-const int   LUZ_MIN     = 200;  // valor ADC mínimo (escuridão = possível falha painel)
-const int   LUZ_MAX     = 900;  // valor ADC máximo (exposição solar excessiva)
+const int   LUZ_MIN     = 200;  
+const int   LUZ_MAX     = 900;  
 
-// --- Variáveis ---
+// Variáveis 
 float temperatura;
 int   luminosidade;
 bool  vibracao;
 bool  alertaAtivo     = false;
 unsigned long ultimaAtualizacao = 0;
-const unsigned long INTERVALO   = 2000; // ms entre leituras
+const unsigned long INTERVALO   = 2000; 
 
 // Caractere personalizado: foguete no LCD
 byte foguete[8] = {
@@ -59,7 +55,6 @@ byte foguete[8] = {
   0b00000
 };
 
-// ============================================================
 void setup() {
   Serial.begin(9600);
 
@@ -88,41 +83,38 @@ void setup() {
   Serial.println("Timestamp(ms) | Temp(C) | Luz(ADC) | Vibr | Status");
 }
 
-// ============================================================
 void loop() {
   unsigned long agora = millis();
 
   if (agora - ultimaAtualizacao >= INTERVALO) {
     ultimaAtualizacao = agora;
 
-    // --- Leitura dos sensores ---
+    // Leitura dos sensores 
     temperatura  = lerTemperatura();
     luminosidade = analogRead(PIN_LUZ);
-    vibracao     = digitalRead(PIN_VIBRACAO); // HIGH = vibração detectada
+    vibracao     = digitalRead(PIN_VIBRACAO); 
 
-    // --- Análise de status ---
+    // Análise de status 
     alertaAtivo = verificarAlertas();
 
-    // --- Exibição no LCD ---
+    // Exibição no LCD 
     exibirLCD();
 
-    // --- LEDs e buzzer ---
+    // LEDs e buzzer 
     controlarAlertas();
 
-    // --- Log Serial ---
+    // Log Serial
     logSerial(agora);
   }
 }
 
-// ============================================================
 // Converte leitura ADC do TMP36 para graus Celsius
 float lerTemperatura() {
   int raw = analogRead(PIN_TEMP);
-  float tensao = raw * (5.0 / 1023.0);      // Converte ADC → Volts
-  return (tensao - 0.5) * 100.0;             // Fórmula TMP36: (V - 0.5) * 100
+  float tensao = raw * (5.0 / 1023.0);    
+  return (tensao - 0.5) * 100.0;           
 }
 
-// ============================================================
 // Retorna true se qualquer parâmetro estiver fora dos limiares
 bool verificarAlertas() {
   if (temperatura < TEMP_MIN || temperatura > TEMP_MAX) return true;
@@ -131,7 +123,6 @@ bool verificarAlertas() {
   return false;
 }
 
-// ============================================================
 void exibirLCD() {
   lcd.clear();
 
@@ -158,7 +149,6 @@ void exibirLCD() {
   }
 }
 
-// ============================================================
 void controlarAlertas() {
   if (alertaAtivo) {
     digitalWrite(LED_OK,    LOW);
@@ -171,7 +161,6 @@ void controlarAlertas() {
   }
 }
 
-// ============================================================
 void logSerial(unsigned long ts) {
   Serial.print(ts);
   Serial.print("ms | T:");
